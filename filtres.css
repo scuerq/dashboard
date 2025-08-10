@@ -69,14 +69,22 @@
     list-style: none;
     margin: 0;
     padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
 }
 
 .filtre-item {
-    padding: 0.5rem 1rem;
+    padding: 0.4rem 0.75rem;
     cursor: pointer;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    transition: background-color 0.2s;
+    justify-content: center;
+    border: 1px solid #E6E6E6;
+    border-radius: 4px;
+    background-color: #fff;
+    user-select: none;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 }
 
 .filtre-item:hover {
@@ -84,8 +92,9 @@
 }
 
 .filtre-item-selectionne {
-    background-color: #E6F2F9; /* Bleu Clair CDC Habitat */
-    color: #004494; /* Bleu Principal CDC Habitat */
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: #fff;
     font-weight: 500;
 }
 
