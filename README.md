@@ -34,6 +34,7 @@ Une bibliothèque JavaScript légère pour ajouter des filtres interactifs à vo
 - Filtrage en temps réel
 - Support de la sélection multiple
 - Mise en surbrillance des valeurs disponibles
+- Les valeurs liées sélectionnées apparaissent en tête des autres filtres
 - Recherche intégrée dans les filtres
 - Événements personnalisables
 
