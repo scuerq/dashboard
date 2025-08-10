@@ -306,15 +306,28 @@ class Filtres {
             item.className = 'filtre-item';
             item.textContent = valeur;
 
-            if (disponibles.has(valeur)) {
+            const estSelectionne = this.filtresActifs[filtre.id] && this.filtresActifs[filtre.id].has(valeur);
+            const estDisponible = disponibles.has(valeur);
+
+            if (estSelectionne) {
+                item.classList.add('filtre-item-selectionne');
+            }
+
+            if (estDisponible) {
                 item.classList.add('valeur-disponible');
+<<<<<<< tcr7ov-codex/fix-partial-highlighting-system
+            } else if (!estSelectionne) {
+                item.classList.add('valeur-indisponible');
+=======
                 item.addEventListener('click', () => this.basculerSelection(filtre, valeur, item));
             } else {
                 item.classList.add('valeur-indisponible');
                 item.style.pointerEvents = 'none';
+>>>>>>> main
             }
-            if (this.filtresActifs[filtre.id] && this.filtresActifs[filtre.id].has(valeur)) {
-                item.classList.add('filtre-item-selectionne');
+
+            if (estDisponible || estSelectionne) {
+                item.addEventListener('click', () => this.basculerSelection(filtre, valeur, item));
             }
 
             liste.appendChild(item);
