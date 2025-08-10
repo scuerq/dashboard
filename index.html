@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Démonstration Filtres CDC Habitat</title>
+    <link rel="stylesheet" href="filtres.css">
+</head>
+<body>
+    <div class="conteneur-principal">
+        <h1>Tableau de Bord des Opérations</h1>
+        
+        <!-- Conteneur pour les filtres -->
+        <div id="filtres-container"></div>
+        
+        <!-- Affichage des résultats -->
+        <div class="resultats">
+            <h2>Résultats</h2>
+            <div id="resultats-container">
+                <p class="aucun-resultat">Aucun filtre appliqué. Sélectionnez des critères pour afficher les résultats.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inclure la bibliothèque de filtres -->
+    <script src="filtres.js"></script>
+    <!-- Inclure les données -->
+    <script src="bdd.js"></script>
+    
+    <script>
+        // Attendre que le DOM soit chargé
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialiser les filtres
+            const filtres = new Filtres();
+            filtres.add_filtres(document.getElementById('filtres-container'));
+            
+            // Ajouter les données directement depuis bdd
+            filtres.add_data(bdd);
+            
+            // Ajouter des filtres
+            filtres.add_filtre('clef', 'clef', {
+                largeur: '250px',
+                recherche: true,
+                multiple: true
+            });
+            
+            filtres.add_filtre('Type de bien', 'Type de bien', {
+                largeur: '200px',
+                recherche: false,
+                multiple: true
+            });
+            
+            filtres.add_filtre('Financement principal', 'Financement', {
+                largeur: '180px',
+                recherche: false,
+                multiple: true
+            });
+            
+            // Gérer les changements de filtre
+            filtres.on_filtre = function(filtresActifs) {
+                const conteneur = document.getElementById('resultats-container');
+                
+                // Filtrer les données en fonction des sélections
+                let resultatsFiltres = [...donnees];
+                
+                Object.entries(filtresActifs).forEach(([champ, valeurs]) => {
+                    if (valeurs && valeurs.length > 0) {
+                        resultatsFiltres = resultatsFiltres.filter(item => {
+                            const valeurItem = item[champ];
+                            return valeurs.includes(String(valeurItem));
+                        });
+                    }
+                });
+                
+                // Afficher les résultats
+                if (resultatsFiltres.length === 0) {
+                    conteneur.innerHTML = '<p class="aucun-resultat">Aucun résultat ne correspond à vos critères de recherche.</p>';
+                    return;
+                }
+                
+                // Générer les cartes de résultats
+                conteneur.innerHTML = '';
+                resultatsFiltres.forEach(operation => {
+                    const carte = document.createElement('div');
+                    carte.className = 'carte';
+                    
+                    carte.innerHTML = `
+                        <h3>${operation['Nom de l\'opération'] || 'Sans nom'}</h3>
+                        <p><span class="valeur">${operation.Commune || 'Non spécifié'}</span> - ${operation['Zone géographique'] || 'Zone non spécifiée'}</p>
+                        <p>Type: <span class="valeur">${operation['Type de bien'] || 'Non spécifié'}</span></p>
+                        <p>Financement: <span class="valeur">${operation['Financement principal'] || 'Non spécifié'}</span></p>
+                        <p class="info-bulle">Code: ${operation.Code || 'N/A'} - ${operation['Code Postal'] || ''}</p>
+                        <p>Surface: <span class="valeur">${operation['Nbre de M² SU-SF'] ? Math.round(operation['Nbre de M² SU-SF']) : 'N/A'} m²</span></p>
+                    `;
+                    
+                    conteneur.appendChild(carte);
+                });
+                
+                // Afficher le nombre de résultats
+                const nombreResultats = document.createElement('p');
+                nombreResultats.innerHTML = `<strong>${resultatsFiltres.length}</strong> opération${resultatsFiltres.length > 1 ? 's' : ''} trouvée${resultatsFiltres.length > 1 ? 's' : ''}`;
+                conteneur.insertBefore(nombreResultats, conteneur.firstChild);
+            };
+        });
+    </script>
+</body>
+</html>

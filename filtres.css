@@ -1,0 +1,150 @@
+/* Style de base pour le système de filtres */
+.filtres-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.filtre {
+    position: relative;
+    min-width: 200px;
+    max-width: 300px;
+    margin-bottom: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #E6E6E6;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.filtre-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    background-color: #F8F9FA;
+    border-bottom: 1px solid #E6E6E6;
+    cursor: pointer;
+    user-select: none;
+}
+
+.filtre-titre {
+    font-weight: 600;
+    color: #004494; /* Bleu Principal CDC Habitat */
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.filtre-badge {
+    background-color: #E6F2F9; /* Bleu Clair CDC Habitat */
+    color: #004494; /* Bleu Principal CDC Habitat */
+    border-radius: 12px;
+    padding: 0.15rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.filtre-contenu {
+    display: none;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 0.5rem 0;
+}
+
+.filtre-ouvert .filtre-contenu {
+    display: block;
+}
+
+.filtre-recherche {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #E6E6E6;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.filtre-liste {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.filtre-item {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.2s;
+}
+
+.filtre-item:hover {
+    background-color: #F8F9FA;
+}
+
+.filtre-item-selectionne {
+    background-color: #E6F2F9; /* Bleu Clair CDC Habitat */
+    color: #004494; /* Bleu Principal CDC Habitat */
+    font-weight: 500;
+}
+
+.filtre-item input[type="checkbox"] {
+    margin-right: 0.5rem;
+}
+
+.filtre-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    border-top: 1px solid #E6E6E6;
+    background-color: #F8F9FA;
+}
+
+.filtre-btn {
+    background: none;
+    border: none;
+    color: #004494; /* Bleu Principal CDC Habitat */
+    cursor: pointer;
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 3px;
+    transition: background-color 0.2s;
+}
+
+.filtre-btn:hover {
+    background-color: #E6F2F9; /* Bleu Clair CDC Habitat */
+}
+
+/* Animation pour l'ouverture/fermeture */
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.filtre-contenu {
+    animation: slideDown 0.2s ease-out;
+}
+
+/* Style pour les valeurs en surbrillance */
+.valeur-disponible {
+    font-weight: 600;
+    color: #198754; /* Vert de succès */
+}
+
+/* Style pour les filtres actifs */
+.filtre-actif {
+    border-color: #004494; /* Bleu Principal CDC Habitat */
+    box-shadow: 0 0 0 1px #004494;
+}
+
+/* Style pour les écrans mobiles */
+@media (max-width: 768px) {
+    .filtres-container {
+        flex-direction: column;
+    }
+    
+    .filtre {
+        max-width: 100%;
+    }
+}
