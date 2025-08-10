@@ -129,6 +129,7 @@ class Filtres {
 
         this.creerFiltreUI(config);
         this.mettreAJourValeursUniques();
+        this.mettreAJourDisponibilites();
     }
 
     /**
@@ -190,6 +191,24 @@ class Filtres {
     mettreAJourFiltres() {
         if (this.data.length === 0) return;
         this.mettreAJourValeursUniques();
+        this.mettreAJourDisponibilites();
+    }
+
+    mettreAJourDisponibilites() {
+        this.filtres.forEach(filtre => {
+            const donneesFiltrees = this.filtrerDonnees(filtre.id);
+            const valeurs = new Set();
+
+            donneesFiltrees.forEach(item => {
+                const valeursTrouvees = this.trouverValeursChamp(item, filtre.champ);
+                if (valeursTrouvees) {
+                    valeursTrouvees.forEach(v => valeurs.add(v));
+                }
+            });
+
+            filtre.valeursDisponibles = valeurs;
+            this.mettreAJourFiltreUI(filtre);
+        });
     }
 
     creerFiltreUI(filtre) {
@@ -278,18 +297,25 @@ class Filtres {
         // Vider la liste actuelle
         liste.innerHTML = '';
         
-        // Ajouter les valeurs uniques
-        const valeursTriees = Array.from(filtre.valeursUniques).sort();
-        
+        // Ordonner les valeurs : disponibles en premier
+        const disponibles = filtre.valeursDisponibles || new Set();
+        const toutesValeurs = Array.from(filtre.valeursUniques);
+        const valeursDisponibles = toutesValeurs.filter(v => disponibles.has(v)).sort();
+        const valeursIndispo = toutesValeurs.filter(v => !disponibles.has(v)).sort();
+        const valeursTriees = [...valeursDisponibles, ...valeursIndispo];
+
         valeursTriees.forEach(valeur => {
             const item = document.createElement('li');
             item.className = 'filtre-item';
             item.textContent = valeur;
-            
+
+            if (disponibles.has(valeur)) {
+                item.classList.add('valeur-disponible');
+            }
             if (this.filtresActifs[filtre.id] && this.filtresActifs[filtre.id].has(valeur)) {
                 item.classList.add('filtre-item-selectionne');
             }
-            
+
             item.addEventListener('click', () => this.basculerSelection(filtre, valeur, item));
             liste.appendChild(item);
         });
@@ -333,6 +359,7 @@ class Filtres {
         
         // Mettre à jour l'UI
         this.mettreAJourFiltreUI(filtre);
+        this.mettreAJourDisponibilites();
         
         // Déclencher l'événement de filtrage
         if (typeof this.on_filtre === 'function') {
@@ -344,6 +371,7 @@ class Filtres {
         if (this.filtresActifs[filtre.id]) {
             this.filtresActifs[filtre.id].clear();
             this.mettreAJourFiltreUI(filtre);
+            this.mettreAJourDisponibilites();
             
             // Déclencher l'événement de filtrage
             if (typeof this.on_filtre === 'function') {
@@ -365,23 +393,24 @@ class Filtres {
     
     /**
      * Filtre les données en fonction des sélections actuelles
+     * @param {string|null} [filtreIgnoreId=null] - Identifiant d'un filtre à ignorer
      * @returns {Array} - Les données filtrées
      */
-    filtrerDonnees() {
+    filtrerDonnees(filtreIgnoreId = null) {
         if (this.data.length === 0) return [];
-        
-        // Si aucun filtre actif, retourner toutes les données
+
+        // Filtrer les filtres actifs en excluant éventuellement un filtre
         const filtresActifs = Object.entries(this.filtresActifs)
-            .filter(([_, valeurs]) => valeurs && valeurs.size > 0);
-            
+            .filter(([id, valeurs]) => id !== filtreIgnoreId && valeurs && valeurs.size > 0);
+
         if (filtresActifs.length === 0) return [...this.data];
-        
+
         // Filtrer les données en fonction des sélections
         return this.data.filter(item => {
             return filtresActifs.every(([filtreId, valeurs]) => {
                 const filtre = this.filtres.find(f => f.id === filtreId);
                 if (!filtre) return true;
-                
+
                 // Vérifier si l'item correspond au filtre
                 return this.correspondAuFiltre(item, filtre.champ, valeurs);
             });
