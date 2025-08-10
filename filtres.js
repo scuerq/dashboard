@@ -311,12 +311,15 @@ class Filtres {
 
             if (disponibles.has(valeur)) {
                 item.classList.add('valeur-disponible');
+                item.addEventListener('click', () => this.basculerSelection(filtre, valeur, item));
+            } else {
+                item.classList.add('valeur-indisponible');
+                item.style.pointerEvents = 'none';
             }
             if (this.filtresActifs[filtre.id] && this.filtresActifs[filtre.id].has(valeur)) {
                 item.classList.add('filtre-item-selectionne');
             }
 
-            item.addEventListener('click', () => this.basculerSelection(filtre, valeur, item));
             liste.appendChild(item);
         });
         

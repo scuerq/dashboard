@@ -92,10 +92,10 @@
 }
 
 .filtre-item-selectionne {
-    background-color: #dc3545;
-    border-color: #dc3545;
+    background-color: #0078d4;
+    border-color: #0078d4;
     color: #fff;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .filtre-item input[type="checkbox"] {
@@ -135,16 +135,24 @@
     animation: slideDown 0.2s ease-out;
 }
 
-/* Style pour les valeurs en surbrillance */
+/* Style pour les valeurs disponibles */
 .valeur-disponible {
     font-weight: 600;
-    color: #198754; /* Vert de succès */
+}
+
+/* Style pour les valeurs indisponibles */
+.valeur-indisponible {
+    color: #a6a6a6;
+    background-color: #f0f0f0;
+    border-color: #d9d9d9;
+    cursor: not-allowed;
+    pointer-events: none;
 }
 
 /* Style pour les filtres actifs */
 .filtre-actif {
-    border-color: #004494; /* Bleu Principal CDC Habitat */
-    box-shadow: 0 0 0 1px #004494;
+    border-color: #0078d4;
+    box-shadow: 0 0 0 1px #0078d4;
 }
 
 /* Style pour les écrans mobiles */
