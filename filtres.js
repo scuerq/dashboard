@@ -230,9 +230,24 @@ class Filtres {
         const badge = document.createElement('span');
         badge.className = 'filtre-badge';
         badge.textContent = '0';
-        
+
+        const clearBtn = document.createElement('button');
+        clearBtn.className = 'filtre-clear';
+        clearBtn.innerHTML = '&times;';
+        clearBtn.title = 'Réinitialiser';
+        clearBtn.style.display = 'none';
+        clearBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.effacerFiltre(filtre);
+        });
+
+        const actionsHeader = document.createElement('div');
+        actionsHeader.className = 'filtre-header-actions';
+        actionsHeader.appendChild(badge);
+        actionsHeader.appendChild(clearBtn);
+
         header.appendChild(titre);
-        header.appendChild(badge);
+        header.appendChild(actionsHeader);
         
         // Contenu du filtre
         const contenu = document.createElement('div');
@@ -254,28 +269,10 @@ class Filtres {
         const liste = document.createElement('ul');
         liste.className = 'filtre-liste';
         contenu.appendChild(liste);
-        
-        // Actions du filtre
-        const actions = document.createElement('div');
-        actions.className = 'filtre-actions';
-        
-        const btnEffacer = document.createElement('button');
-        btnEffacer.className = 'filtre-btn';
-        btnEffacer.textContent = 'Effacer';
-        btnEffacer.addEventListener('click', () => this.effacerFiltre(filtre));
-        
-        const btnFermer = document.createElement('button');
-        btnFermer.className = 'filtre-btn';
-        btnFermer.textContent = 'Fermer';
-        btnFermer.addEventListener('click', () => this.basculerFiltre(filtreElement));
-        
-        actions.appendChild(btnEffacer);
-        actions.appendChild(btnFermer);
-        
+
         // Assemblage des éléments
         filtreElement.appendChild(header);
         filtreElement.appendChild(contenu);
-        filtreElement.appendChild(actions);
         
         // Gestionnaire d'événements pour l'en-tête
         header.addEventListener('click', () => this.basculerFiltre(filtreElement));
@@ -325,7 +322,12 @@ class Filtres {
         if (badge) {
             const nbSelectionnes = this.filtresActifs[filtre.id] ? this.filtresActifs[filtre.id].size : 0;
             badge.textContent = nbSelectionnes;
-            
+
+            const clearBtn = filtreElement.querySelector('.filtre-clear');
+            if (clearBtn) {
+                clearBtn.style.display = nbSelectionnes > 0 ? 'inline-flex' : 'none';
+            }
+
             // Mettre à jour l'état actif du filtre
             if (nbSelectionnes > 0) {
                 filtreElement.classList.add('filtre-actif');

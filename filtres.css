@@ -45,6 +45,27 @@
     font-weight: 600;
 }
 
+.filtre-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.filtre-clear {
+    display: none;
+    background: none;
+    border: none;
+    color: #004494; /* Bleu Principal CDC Habitat */
+    cursor: pointer;
+    font-size: 0.9rem;
+    line-height: 1;
+    padding: 0;
+}
+
+.filtre-clear:hover {
+    color: #dc3545;
+}
+
 .filtre-contenu {
     display: none;
     max-height: 300px;
@@ -100,29 +121,6 @@
 
 .filtre-item input[type="checkbox"] {
     margin-right: 0.5rem;
-}
-
-.filtre-actions {
-    display: flex;
-    justify-content: space-between;
-    padding: 0.5rem 0.75rem;
-    border-top: 1px solid #E6E6E6;
-    background-color: #F8F9FA;
-}
-
-.filtre-btn {
-    background: none;
-    border: none;
-    color: #004494; /* Bleu Principal CDC Habitat */
-    cursor: pointer;
-    font-size: 0.8rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 3px;
-    transition: background-color 0.2s;
-}
-
-.filtre-btn:hover {
-    background-color: #E6F2F9; /* Bleu Clair CDC Habitat */
 }
 
 /* Animation pour l'ouverture/fermeture */
