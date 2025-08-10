@@ -37,7 +37,6 @@ Une classe JavaScript pour gérer des filtres interactifs dans une interface uti
 
 ## Méthodes utilitaires (privées)
 - **_detectFilterFields()** : Détecte automatiquement les champs filtrables
-- **_defaultFormatter(value)** : Formate les valeurs pour l'affichage
 - **_defaultFormatValue(value)** : Formate les valeurs par défaut
 - **_defaultFilterFn(item, field, selectedValues)** : Fonction de filtrage par défaut
 - **_triggerFilterChange()** : Déclenche les callbacks de changement de filtre
