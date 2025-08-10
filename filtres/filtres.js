@@ -127,80 +127,13 @@ class Filtres {
             console.warn('No filter fields detected. Call add_data() first.');
             return;
         }
-        
+
         this.filterFields.forEach(field => {
             this.add_filtre({
                 field: field,
                 label: this.filterLabels[field] || field
             });
         });
-    }
-
-    /**
-     * Ajoute un filtre pour un champ spécifique
-     * @param {string} fieldName - Le nom du champ à filtrer
-     * @param {Object} [options] - Options supplémentaires pour le filtre
-     * @param {string} [options.label] - Libellé personnalisé pour le filtre
-     * @param {Function} [options.format] - Fonction de formatage pour l'affichage des valeurs
-     * @returns {Filtres} L'instance courante pour le chaînage
-     */
-    add_filtre(fieldName, options = {}) {
-        // Vérifier si le champ existe dans les données
-        if (this.data.length > 0 && !(fieldName in this.data[0])) {
-            console.warn(`Le champ '${fieldName}' n'existe pas dans les données.`);
-            return this;
-        }
-
-        // Vérifier si le filtre existe déjà
-        if (this.filters[fieldName]) {
-            console.warn(`Un filtre pour le champ '${fieldName}' existe déjà.`);
-            return this;
-        }
-
-        // Ajouter le champ à la liste des champs de filtre s'il n'y est pas déjà
-        if (!this.filterFields.includes(fieldName)) {
-            this.filterFields.push(fieldName);
-            
-            // Créer un libellé par défaut si non fourni
-            if (!this.filterLabels[fieldName]) {
-                this.filterLabels[fieldName] = fieldName
-                    .replace(/_/g, ' ')
-                    .replace(/\b\w/g, l => l.toUpperCase());
-            }
-        }
-
-        // Créer le filtre
-        this.filters[fieldName] = {
-            field: fieldName,
-            label: options.label || this.filterLabels[fieldName] || fieldName,
-            format: options.format || this._defaultFormatter,
-            ...options
-        };
-
-        // Initialiser les valeurs sélectionnées pour ce filtre
-        if (!this.selectedValues[fieldName]) {
-            this.selectedValues[fieldName] = [];
-        }
-
-        // Rendu du filtre si le conteneur est défini
-        if (this.container) {
-            this.renderFilter(fieldName);
-        }
-
-        // Déclencher l'événement de changement de filtre
-        this._triggerFilterChange();
-
-        return this;
-    }
-
-    /**
-     * Formateur par défaut pour les valeurs de filtre
-     * @private
-     */
-    _defaultFormatter(value) {
-        if (value === null || value === undefined) return 'Non défini';
-        if (typeof value === 'boolean') return value ? 'Oui' : 'Non';
-        return String(value);
     }
 
     /**
@@ -211,17 +144,29 @@ class Filtres {
      * @param {Function} [options.formatValue] - Fonction pour formater les valeurs du filtre
      * @param {Function} [options.filterFn] - Fonction de filtrage personnalisée
      */
-    add_filtre({ field, label = field, formatValue, filterFn,width }) {
+    add_filtre({ field, label = field, formatValue, filterFn, width }) {
         if (!this.data.length) {
             console.error('Please add data before adding filters');
-            return;
+            return this;
         }
 
         // Vérifier que le champ existe dans les données
         if (!this.data[0].hasOwnProperty(field)) {
             console.warn(`Field '${field}' not found in data. Available fields:`, Object.keys(this.data[0]));
-            return;
+            return this;
         }
+
+        // Vérifier si le filtre existe déjà
+        if (this.filters[field]) {
+            console.warn(`Filter for field '${field}' already exists.`);
+            return this;
+        }
+
+        // Maintenir la liste des champs et des libellés
+        if (!this.filterFields.includes(field)) {
+            this.filterFields.push(field);
+        }
+        this.filterLabels[field] = label;
 
         // Obtenir les valeurs uniques pour ce champ
         const uniqueValues = [...new Set(this.data.map(item => item[field]))]
@@ -232,25 +177,31 @@ class Filtres {
                 }
                 return a - b;
             });
-        
+
         // Stocker la configuration du filtre
         this.filters[field] = {
+            field,
             label,
             values: uniqueValues,
             formatValue: formatValue || this._defaultFormatValue,
             filterFn: filterFn || this._defaultFilterFn,
-            width: width || '300px',  // Ajoutez la largeur
+            width: width || '300px',
         };
-        
+
         // Initialiser les valeurs sélectionnées pour ce filtre
         if (!this.selectedValues[field]) {
             this.selectedValues[field] = [];
         }
-        
+
         // Rendre le filtre si le conteneur est défini
         if (this.container) {
             this.renderFilter(field);
         }
+
+        // Déclencher l'événement de changement
+        this._triggerFilterChange();
+
+        return this;
     }
     
     /**
