@@ -309,14 +309,23 @@ class Filtres {
             item.className = 'filtre-item';
             item.textContent = valeur;
 
-            if (disponibles.has(valeur)) {
-                item.classList.add('valeur-disponible');
-            }
-            if (this.filtresActifs[filtre.id] && this.filtresActifs[filtre.id].has(valeur)) {
+            const estSelectionne = this.filtresActifs[filtre.id] && this.filtresActifs[filtre.id].has(valeur);
+            const estDisponible = disponibles.has(valeur);
+
+            if (estSelectionne) {
                 item.classList.add('filtre-item-selectionne');
             }
 
-            item.addEventListener('click', () => this.basculerSelection(filtre, valeur, item));
+            if (estDisponible) {
+                item.classList.add('valeur-disponible');
+            } else if (!estSelectionne) {
+                item.classList.add('valeur-indisponible');
+            }
+
+            if (estDisponible || estSelectionne) {
+                item.addEventListener('click', () => this.basculerSelection(filtre, valeur, item));
+            }
+
             liste.appendChild(item);
         });
         

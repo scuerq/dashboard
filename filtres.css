@@ -141,6 +141,12 @@
     color: #198754; /* Vert de succès */
 }
 
+.valeur-indisponible {
+    color: #6c757d; /* Gris pour indisponible */
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
 /* Style pour les filtres actifs */
 .filtre-actif {
     border-color: #004494; /* Bleu Principal CDC Habitat */
